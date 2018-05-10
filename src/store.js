@@ -17,10 +17,10 @@ Reactotron
   .configure()
   .use(reactotronRedux())
 
-if (__DEV__) {
-  Reactotron
-    .connect() // let's connect!
-}
+// if (__DEV__) {
+//   Reactotron
+//     .connect() // let's connect!
+// }
 // Redux DevTools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-// import { ContractData, ContractForm } from 'drizzle-react-components'
 import timetravel from '../../timetravel.jpg'
-import PredictionsTable from '../../predictions/layouts/table/PredictionsTable'
+import PredictionsTable from '../../hashes/layouts/table/PredictionsTable'
 import TextField from 'material-ui/TextField'
 import Snackbar from 'material-ui/Snackbar'
 import AppBar from 'material-ui/AppBar';

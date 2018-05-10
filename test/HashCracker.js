@@ -75,6 +75,19 @@ contract('HashCracker', (accounts) => {
     }
   })
 
+  it('fails to cancel crack with wrong account', async () => {
+    try {
+      const tx = await Contract.cancelHashCrack(0, {from: account2})
+      console.log('tx', tx)
+      throw new Error('unauthorized tx')
+    } catch (err) {
+      if (!err.message.endsWith('revert')) {
+        throw err
+      }
+      return
+    }
+  })
+
   it('fires CrackedHashEvent', (done) => {
     const value = web3.toWei(0.1, 'ether')
     var event = Contract.CrackedHashEvent()
@@ -112,11 +125,14 @@ contract('HashCracker', (accounts) => {
     }
   })
 
-  // it('submit crack with password', async() => { 
-    
-  //   // await Contract.submitCrack(0, "Password1", { from: account2 })
-  //   // assert.isTrue(false)
-  // })
+
+  it('submits and cancels crack with password', async() => { 
+    const value = web3.toWei(0.1, 'ether')
+    await Contract.requestHashCrack("0x19513FDC9DA4FB72A4A05EB66917548D3C90FF94D5419E1F2363EEA89DFEE1DD", "sha256", { value }) //Password1
+    await Contract.cancelHashCrack(1)
+    const hashCrack = (await Contract.hashCracks(1))    
+    assert.isTrue(hashCrack[6])
+  })
 
   // it('claim reward fails', async () => {
   //   const balance = web3.fromWei(await web3.eth.getBalance(account).toNumber(), 'ether')

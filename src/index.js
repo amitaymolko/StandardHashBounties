@@ -4,9 +4,8 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import { Provider } from 'react-redux'
 import { syncHistoryWithStore } from 'react-router-redux'
 import { DrizzleProvider } from 'drizzle-react'
-import Portis from 'portis'
 
-__DEV__ = process.env.NODE_ENV !== 'production'
+const __DEV__ = process.env.NODE_ENV !== 'production'
 
 // Layouts
 import App from './App'
@@ -17,7 +16,7 @@ import LoadingContainer from './layouts/loading/LoadingContainer'
 import HashCrackerProd from '../build_production/contracts/HashCracker.json'
 import HashCrackerDev from '../build/contracts/HashCracker.json'
 
-const HashCracker = __DEV__ ? HashCrackerDev : HashCrackerProd
+const HashCracker = HashCrackerDev//__DEV__ ? HashCrackerDev : HashCrackerProd
 
 
 // Redux Store
@@ -27,29 +26,30 @@ import store from './store'
 const history = syncHistoryWithStore(browserHistory, store)
 
 // const devWebsocketUrl = 'ws://127.0.0.1:7545'
-const devWebsocketUrl = 'wss://mainnet.infura.io/ws'
+// const devWebsocketUrl = 'wss://mainnet.infura.io/ws'
 
-const prodWebsocketUrl = 'wss://mainnet.infura.io/ws'
+// const prodWebsocketUrl = 'wss://mainnet.infura.io/ws'
 // const prodWebsocketUrl = 'ws://34.235.133.122:8546'
 
 
-const WebSocketUrl = __DEV__ ? devWebsocketUrl : prodWebsocketUrl
+// const WebSocketUrl = __DEV__ ? devWebsocketUrl : prodWebsocketUrl
 
 // Set Drizzle options.
 const options = {
   web3: {
-    block: false,
-    fallback: {
-      type: 'ws',
-      url: WebSocketUrl
-    }
+    // block: false,
+    // fallback: {
+    //   type: 'ws',
+    //   url: WebSocketUrl
+    // }
   },
   contracts: [
     HashCracker,
   ],
   events: {
-    HashCracker: ['InvestmentEvent', 'PredictionEvent', 'FailedHashCrackerEvent', 'HashCrackerEvent'],
-  }
+    HashCracker: ['NewHashEvent', 'CrackedHashEvent'],
+  },
+  polls: {}
 }
 
 ReactDOM.render((
@@ -58,7 +58,7 @@ ReactDOM.render((
         <LoadingContainer>
           <Router history={history}>
             <Route path="/" component={App}>
-              <IndexRoute component={HomeContainer} />
+              {/* <IndexRoute component={HomeContainer} /> */}
             </Route>
           </Router>
         </LoadingContainer>

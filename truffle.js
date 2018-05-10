@@ -1,5 +1,5 @@
 const HDWalletProviderPriv = require("truffle-hdwallet-provider-privkey");
-var HDWalletProvider = require("truffle-hdwallet-provider");
+const HDWalletProvider = require("truffle-hdwallet-provider");
 
 require('dotenv').config()
 
@@ -31,7 +31,7 @@ module.exports = {
       from: FROM_ADDRESS,
       gas: 4700000,
       gasPrice: 3000000000*70,
-      network_id: "1"
+      network_id: "3"
     },
     live: {
       provider: () => {
