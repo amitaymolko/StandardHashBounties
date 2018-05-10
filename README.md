@@ -1,5 +1,5 @@
-# Decipher
-Decipher - Proof of Time-Travel on the blockchain
+# HashCracker
+HashCracker - Proof of Time-Travel on the blockchain
 
 ## Develop
 Download and run [Ganache](http://truffleframework.com/ganache/)  

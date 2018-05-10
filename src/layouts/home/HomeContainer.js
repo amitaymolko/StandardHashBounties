@@ -9,7 +9,7 @@ const mapStateToProps = state => {
     contracts: state.contracts,
     transactionStack: state.transactionStack,
     transactions: state.transactions,
-    Decipher: state.contracts.Decipher,
+    HashCracker: state.contracts.HashCracker,
     drizzleStatus: state.drizzleStatus
   }
 }

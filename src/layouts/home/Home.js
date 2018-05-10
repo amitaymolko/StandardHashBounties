@@ -25,24 +25,24 @@ class Home extends Component {
     // console.log('props', props)
     // console.log('context.drizzle', context.drizzle)
     const account = accounts[0]
-    const Decipher = context.drizzle.contracts.Decipher
+    const HashCracker = context.drizzle.contracts.HashCracker
     let getPredictionByAddressLength 
     if (account) {
-      getPredictionByAddressLength = Decipher.methods.getPredictionByAddressLength.cacheCall(account)
+      getPredictionByAddressLength = HashCracker.methods.getPredictionByAddressLength.cacheCall(account)
     }
 
     this.state = {
       web3,
-      Decipher,
+      HashCracker,
       account,
       dataKeys: {
-        timeTravelProven: Decipher.methods.timeTravelProven.cacheCall(),
+        timeTravelProven: HashCracker.methods.timeTravelProven.cacheCall(),
         getPredictionByAddressLength,
         getPrediction: {}
       },
       predictions: [],
       accountPredictions: [],
-      address: Decipher._address,
+      address: HashCracker._address,
       blockNumber: 0,
       balance: 'loading...',
       form: {
@@ -109,8 +109,8 @@ class Home extends Component {
 
   getTimeTravelProvenString() {
     if (this.props.drizzleStatus.initialized) {
-      if (this.state.dataKeys.timeTravelProven in this.props.Decipher.timeTravelProven) {
-        const timeTravelProven = this.props.Decipher.timeTravelProven[this.state.dataKeys.timeTravelProven].value
+      if (this.state.dataKeys.timeTravelProven in this.props.HashCracker.timeTravelProven) {
+        const timeTravelProven = this.props.HashCracker.timeTravelProven[this.state.dataKeys.timeTravelProven].value
         if (timeTravelProven) {
           return "✅ OMG! YES!"
         }
@@ -122,10 +122,10 @@ class Home extends Component {
   }
 
   // getPredictions() {
-  //   console.log('this.props.Decipher.getPredictionsLength', this.props.Decipher.getPredictionsLength)
+  //   console.log('this.props.HashCracker.getPredictionsLength', this.props.HashCracker.getPredictionsLength)
     
-  //   if (this.state.dataKeys.getPredictionsLength in this.props.Decipher.getPredictionsLength) {
-  //     const predictionsLength = this.props.Decipher.getPredictionsLength[this.state.dataKeys.getPredictionsLength].value
+  //   if (this.state.dataKeys.getPredictionsLength in this.props.HashCracker.getPredictionsLength) {
+  //     const predictionsLength = this.props.HashCracker.getPredictionsLength[this.state.dataKeys.getPredictionsLength].value
   //     console.log('predictionsLength', predictionsLength)
   //     for (let index = 0; index < predictionsLength; index++) {
   //       const getPrediction = this.state.dataKeys.getPrediction
@@ -133,7 +133,7 @@ class Home extends Component {
   //       if (!(index in this.state.dataKeys.getPrediction)) {
   //         console.log('index', index)
           
-  //         getPrediction[index] = this.state.Decipher.methods.getPrediction.cacheCall(index)
+  //         getPrediction[index] = this.state.HashCracker.methods.getPrediction.cacheCall(index)
           
   //         this.setState({
   //           dataKeys: {
@@ -142,8 +142,8 @@ class Home extends Component {
   //         })
   //       } 
   //       const dataKey = getPrediction[index]
-  //       if (dataKey in this.props.Decipher.getPrediction) {
-  //         const prediction = this.props.Decipher.getPrediction[dataKey].value
+  //       if (dataKey in this.props.HashCracker.getPrediction) {
+  //         const prediction = this.props.HashCracker.getPrediction[dataKey].value
 
   //         const predictions = this.state.predictions
           
@@ -159,9 +159,9 @@ class Home extends Component {
   async getPredictionsNoCache () {
     const predictions = []
     
-    const predictionsLength = await this.state.Decipher.methods.getPredictionsLength().call()    
+    const predictionsLength = await this.state.HashCracker.methods.getPredictionsLength().call()    
     for (let index = 0; index < predictionsLength; index++) {
-      const prediction = await this.state.Decipher.methods.getPrediction(index).call()      
+      const prediction = await this.state.HashCracker.methods.getPrediction(index).call()      
       predictions[index] = prediction  
     }
 
@@ -173,9 +173,9 @@ class Home extends Component {
   async getAccountPredictionsNoCache (account) {
     const accountPredictions = []
     
-    const predictionsLength = await this.state.Decipher.methods.getPredictionByAddressLength(account).call()    
+    const predictionsLength = await this.state.HashCracker.methods.getPredictionByAddressLength(account).call()    
     for (let index = 0; index < predictionsLength; index++) {
-      const prediction = await this.state.Decipher.methods.getPredictionByAddressByIndex(account, index).call()      
+      const prediction = await this.state.HashCracker.methods.getPredictionByAddressByIndex(account, index).call()      
       accountPredictions[index] = prediction  
     }
 
@@ -217,7 +217,7 @@ class Home extends Component {
     const {form} = this.state
     
     const value = this.state.web3.utils.toWei('0.001', 'ether').toString()
-    const makePredictionStackIndex = this.state.Decipher.methods.makePrediction.cacheSend(form.blockNumber, form.blockHash, { gas: 140000, value })
+    const makePredictionStackIndex = this.state.HashCracker.methods.makePrediction.cacheSend(form.blockNumber, form.blockHash, { gas: 140000, value })
   
     this.setState({
       makePredictionStackIndex,
@@ -264,7 +264,7 @@ class Home extends Component {
             <Typography variant="title" color="inherit" style={{flex: 1}}>
               Proof of Time-Travel
             </Typography>
-            <a href="https://github.com/amitaymolko/Decipher" target="_blank">
+            <a href="https://github.com/amitaymolko/HashCracker" target="_blank">
               <IconButton>
                 <GithubCircle style={{ color: 'black'}}/>
               </IconButton>
@@ -297,7 +297,7 @@ class Home extends Component {
             <h2>Donate:</h2>
             <p>Contract address: {address}</p>
             <p>Balance: {balance}</p>
-            <p><a href="https://github.com/amitaymolko/Decipher/blob/master/contracts/Decipher.sol" target="_blank">View Source Code</a></p>
+            <p><a href="https://github.com/amitaymolko/HashCracker/blob/master/contracts/HashCracker.sol" target="_blank">View Source Code</a></p>
           </Card>
 
           <Card className="card">

@@ -69,9 +69,9 @@
   "sourceMap": "25:488:0:-;;;177:58;;;;;;;;212:5;:18;;-1:-1:-1;;;;;220:10:0;212:18;-1:-1:-1;;;;;;212:18:0;;;;;;25:488;;;;;;",
   "deployedSourceMap": "25:488:0:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;346:165;;;;;;;;;;;;;;;;;;73:36;;;;;;;;;;;;;;;;;;;;;;;;;;;49:20;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;239:103;;;;;;;;;;;;;;346:165;408:19;160:5;;146:10;160:5;146:19;;;160:5;;146:19;142:26;;;441:11;408:45;;459:8;:21;;;481:24;;459:47;;;;;;;;;;;;;;;;;;-1:-1:-1;459:47:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;142:26;346:165;;:::o;73:36::-;;;;:::o;49:20::-;;;;;;:::o;239:103::-;160:5;;146:10;160:5;146:19;;;160:5;;146:19;142:26;;;301:24;:36;;;142:26;239:103;:::o",
   "source": "pragma solidity ^0.4.2;\n\ncontract Migrations {\n  address public owner;\n  uint public last_completed_migration;\n\n  modifier restricted() {\n    if (msg.sender == owner) _;\n  }\n\n  function Migrations() public {\n    owner = msg.sender;\n  }\n\n  function setCompleted(uint completed) public restricted {\n    last_completed_migration = completed;\n  }\n\n  function upgrade(address new_address) public restricted {\n    Migrations upgraded = Migrations(new_address);\n    upgraded.setCompleted(last_completed_migration);\n  }\n}\n",
-  "sourcePath": "/Volumes/code/projects/Decipher/contracts/Migrations.sol",
+  "sourcePath": "/Volumes/code/projects/HashCracker/contracts/Migrations.sol",
   "ast": {
-    "absolutePath": "/Volumes/code/projects/Decipher/contracts/Migrations.sol",
+    "absolutePath": "/Volumes/code/projects/HashCracker/contracts/Migrations.sol",
     "exportedSymbols": {
       "Migrations": [
         56
@@ -717,7 +717,7 @@
     "src": "0:514:0"
   },
   "legacyAST": {
-    "absolutePath": "/Volumes/code/projects/Decipher/contracts/Migrations.sol",
+    "absolutePath": "/Volumes/code/projects/HashCracker/contracts/Migrations.sol",
     "exportedSymbols": {
       "Migrations": [
         56

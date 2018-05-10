@@ -14,10 +14,10 @@ import HomeContainer from './layouts/home/HomeContainer'
 import LoadingContainer from './layouts/loading/LoadingContainer'
 
 
-import DecipherProd from '../build_production/contracts/Decipher.json'
-import DecipherDev from '../build/contracts/Decipher.json'
+import HashCrackerProd from '../build_production/contracts/HashCracker.json'
+import HashCrackerDev from '../build/contracts/HashCracker.json'
 
-const Decipher = __DEV__ ? DecipherDev : DecipherProd
+const HashCracker = __DEV__ ? HashCrackerDev : HashCrackerProd
 
 
 // Redux Store
@@ -45,10 +45,10 @@ const options = {
     }
   },
   contracts: [
-    Decipher,
+    HashCracker,
   ],
   events: {
-    Decipher: ['InvestmentEvent', 'PredictionEvent', 'FailedDecipherEvent', 'DecipherEvent'],
+    HashCracker: ['InvestmentEvent', 'PredictionEvent', 'FailedHashCrackerEvent', 'HashCrackerEvent'],
   }
 }
 

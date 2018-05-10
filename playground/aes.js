@@ -2,7 +2,7 @@ const scryptsy = require('scryptsy')
 const ethUtil = require('ethereumjs-util')
 const crypto = require('crypto')
 
-function decipherBuffer(decipher, data) {
+function DecipherBuffer(decipher, data) {
     return Buffer.concat([decipher.update(data), decipher.final()])
 }
 
@@ -32,8 +32,8 @@ if (mac.toString('hex') !== macJs) {
     throw new Error('Key derivation failed - possibly wrong passphrase')
 }
 
-// let decipher = crypto.createDecipheriv('aes-128-ctr', derivedKey.slice(0, 16), Buffer.from(iv, 'hex'))
-// let seed = decipherBuffer(decipher, ciphertext, 'hex')
+// let HashCracker = crypto.createDecipheriv('aes-128-ctr', derivedKey.slice(0, 16), Buffer.from(iv, 'hex'))
+// let seed = DecipherBuffer(Decipher, ciphertext, 'hex')
 // console.log('seed', seed)
 
 

@@ -1,6 +1,6 @@
 
-var Decipher = artifacts.require("./Decipher.sol");
+var HashCracker = artifacts.require("./HashCracker.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(Decipher)
+  deployer.deploy(HashCracker)
 };
