@@ -1,4 +1,8 @@
-fetch("HashCracker.json").then((e) => e.json().then(function(text){window.contract = text}));
+fetch("HashCracker.json").then((e) => e.json().then(function(text){
+  window.HashCrackerJson = text
+  window.HashCrackerAbi = web3.eth.contract(window.HashCrackerJson.abi);
+  window.HashCracker = window.HashCrackerAbi.at(window.HashCrackerJson['networks']['3'].address);
+}));
 
 function closeModal(tx) {
     $('#exampleModal').modal('hide');
@@ -7,8 +11,6 @@ function closeModal(tx) {
 }
 
 function pay() {
-    var contractAbi = web3.eth.contract(window.contract.abi);
-    var myContract = contractAbi.at(window.contract['networks']['3'].address);
     console.log(document.forms['submit_hash'].hash_to_break.value, document.forms['submit_hash'].hash_type.value);
-    myContract.requestHashCrack(document.forms['submit_hash'].hash_to_break.value, document.forms['submit_hash'].hash_type.value, {'value': document.forms['submit_hash'].price.value * 10**18}, closeModal)
+  window.HashCracker.requestHashCrack(document.forms['submit_hash'].hash_to_break.value, document.forms['submit_hash'].hash_type.value, {'value': document.forms['submit_hash'].price.value * 10**18}, closeModal)
 }
