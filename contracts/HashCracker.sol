@@ -1,9 +1,7 @@
 pragma solidity 0.4.23;
 
 contract HashCracker {
-
-    event Log(string message);
-    event LogBytes32(string message, bytes32 _bytes);
+  
     event NewHashEvent(address requestorAddress, uint bountyValue, bytes32 hashBytes, string hashType);
     event CrackedHashEvent(address crackerAddress, uint hashCrackIndex);
  
@@ -14,8 +12,8 @@ contract HashCracker {
         bytes32 hashBytes;
         string hashType;
        
-        string crackedPassword;
         address crackerAddress;
+        string crackedPassword;
     }
 
     HashCrack[] public hashCracks;
@@ -45,7 +43,7 @@ contract HashCracker {
     payable
     public 
     {
-        hashCracks.push(HashCrack(msg.sender, msg.value, _hashBytes, _hashType, "", 0x00));
+        hashCracks.push(HashCrack(msg.sender, msg.value, _hashBytes, _hashType, 0x00, ""));
         emit NewHashEvent(msg.sender, msg.value, _hashBytes, _hashType);
     }
 
@@ -60,10 +58,6 @@ contract HashCracker {
         } else if (keccak256(hashCrack.hashType) == keccak256("sha3")) {
             hashedPassword = keccak256(_password);
             handleCrackAttemptInternal(_index, _password, hashedPassword);
-        } else if (keccak256(hashCrack.hashType) == keccak256("ripemd160")) {
-            revert();
-            // bytes20 hashedPassword = ripemd160(_password);
-            // handleCrackAttemptInternal(_index, _password, hashedPassword);
         } else {
             revert();
         }
@@ -73,12 +67,10 @@ contract HashCracker {
     internal
     {
         HashCrack storage hashCrack = hashCracks[_index];
-        emit LogBytes32("_hashedPassword", _hashedPassword);
-        emit LogBytes32("hashCrack.hashBytes", hashCrack.hashBytes);
         bool cracked = (_hashedPassword == hashCrack.hashBytes);
-        if (cracked) {
-            hashCrack.crackedPassword = _password;
+        if (cracked && hashCrack.crackerAddress == 0x00) {
             hashCrack.crackerAddress = msg.sender;
+            hashCrack.crackedPassword = _password;
 
             emit CrackedHashEvent(msg.sender, _index);
 
@@ -88,7 +80,11 @@ contract HashCracker {
         }
     }
 
-    function getHashCracksLength() public view returns(uint) {
+    function getHashCracksLength() 
+    public 
+    view 
+    returns(uint) 
+    {
         return hashCracks.length;
     }
 }
