@@ -34,7 +34,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">Decipher</a>
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">HashBounty</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fa fa-bars"></i>
@@ -192,10 +192,39 @@
       </div>
       <div class="modal-body">
           <form name="submit_hash">
-        Hash: <input type=text name="hash" value="0.5"> Eth
+              <pre>
+        Hash: <input type=text name="hash_to_break" value="0x0"> Eth
+        Hash Type:
+              <select name="hash_type">
+                  <option>sha256</option>
+                  <option>sha3</option>
+              </select>
         Price: <input type=text name="price" value="0.5"> Eth
         <input type=file>
+        </pre>
               </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="pay()">Start!</button>
+      </div>
+    </div>
+  </div>
+</div>
+      
+      
+<div class="modal fade" id="thankYou" tabindex="-1" role="dialog" aria-labelledby="thankYouModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="thankYouModalLabel">Upload your file</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          Your submission has been sent to the blockchain.
+          Tx id: {{window.tx}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
