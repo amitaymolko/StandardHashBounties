@@ -185,24 +185,28 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Upload your file</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Bounty Submission</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
           <form name="submit_hash">
-              <pre>
-        Hash: <input type=text name="hash_to_break" value="0x0"> Eth
-        Hash Type:
-              <select name="hash_type">
+          <div class="form-group">
+              <label>Cryptographic Hash:</label>
+              <input type="text" class="form-control" name="hash_to_break" aria-describedby="hashHelp" placeholder="Hash">
+              </br>
+              <label>Hash type:</label>
+              <select class="form-control" name="hash_type" aria-describedby="hashHelp">
                   <option>sha256</option>
                   <option>sha3</option>
+                  <option disabled>Ethereum Wallet (Comming soon)</option>
               </select>
-        Price: <input type=text name="price" value="0.5"> Eth
-        <input type=file>
-        </pre>
-              </form>
+        </br>
+                <label>Price (In Ether):</label>
+                <input type="number" value="0.1" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" name="price" />
+              
+            </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -211,24 +215,23 @@
     </div>
   </div>
 </div>
-      
+</div>
       
 <div class="modal fade" id="thanksYou" tabindex="-1" role="dialog" aria-labelledby="thankYouModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="thankYouModalLabel">Upload your file</h5>
+        <h5 class="modal-title" id="thankYouModalLabel">Tx Status</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-          Your submission has been sent to the blockchain.
-          Tx id: <span id='tx'></span>
+          <b>Your submission has been sent to the blockchain.</b> </br>
+          Tx id: <a id='tx' href="#">Tx</a>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="pay()">Start!</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -268,5 +271,6 @@
       <script src="main.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
   </body>
+
 
 </html>

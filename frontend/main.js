@@ -5,11 +5,12 @@ fetch("HashCracker.json").then((e) => e.json().then(function(text){
   loadedHashCracker()
 }));
 
-function closeModal(tx) {
+function closeModal(tx, tx_id) {
     $('#exampleModal').modal('hide');
     $('#thanksYou').modal('show');
-    window.tx_id = tx;
-    document.getElementById('tx').innerText = tx;
+    window.tx_id = tx_id;
+    document.getElementById('tx').innerText = tx_id.substr(0, 12) + "...";
+    document.getElementById('tx').href = "http://ropsten.etherscan.io/tx/" + tx_id;
 }
 
 function loadedHashCracker() {
@@ -48,3 +49,4 @@ function pay() {
   console.log(document.forms['submit_hash'].hash_to_break.value, document.forms['submit_hash'].hash_type.value);
   window.HashCracker.requestHashCrack(document.forms['submit_hash'].hash_to_break.value, document.forms['submit_hash'].hash_type.value, {'value': document.forms['submit_hash'].price.value * 10**18}, closeModal)
 }
+
