@@ -213,7 +213,7 @@
 </div>
       
       
-<div class="modal fade" id="thankYou" tabindex="-1" role="dialog" aria-labelledby="thankYouModalLabel" aria-hidden="true">
+<div class="modal fade" id="thanksYou" tabindex="-1" role="dialog" aria-labelledby="thankYouModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -224,7 +224,7 @@
       </div>
       <div class="modal-body">
           Your submission has been sent to the blockchain.
-          Tx id: {{window.tx}}
+          Tx id: <span id='tx'></span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -266,6 +266,7 @@
     })    
     </script>
       <script src="main.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
   </body>
 
 </html>

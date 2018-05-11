@@ -7,7 +7,8 @@ fetch("HashCracker.json").then((e) => e.json().then(function(text){
 function closeModal(tx) {
     $('#exampleModal').modal('hide');
     $('#thanksYou').modal('show');
-    window.tx = tx;
+    window.tx_id = tx;
+    document.getElementById('tx').innerText = tx;
 }
 
 function pay() {
