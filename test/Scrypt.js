@@ -28,6 +28,8 @@ contract('Scrypt', (accounts) => {
 
   it('fires NewHashEvent', async() => {
     const hash = web3.sha3(inputBytes, { encoding: "hex" })
+    console.log(hash);
+    
     await Contract.requestScryptHashCrack(hash, inputBytes) 
     const scryptHashParam = await Contract.getScrypt(hash)
     

@@ -5,11 +5,12 @@ const ethUtil = require('ethereumjs-util')
 const HDWalletProviderPriv = require("truffle-hdwallet-provider-privkey");
 const HDWalletProvider = require("truffle-hdwallet-provider");
 
-require('dotenv').config({ path: '../.env' })
+require('dotenv').config({ path: '.env' })
 
 const NETWORK = process.env.NETWORK
 const ORACLE_FROM_ADDRESS = process.env.ORACLE_FROM_ADDRESS
 const ORACLE_PRIVATE_KEY = process.env.ORACLE_PRIVATE_KEY
+console.log('NETWORK', NETWORK)
 
 const HashCrackerContract = require('../build/contracts/HashCracker.json')
 
@@ -18,7 +19,7 @@ let web3
 if (NETWORK == 'development') {
     web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
 } else if (NETWORK == 'ropsten') {
-    web3 = new HDWalletProviderPriv(ORACLE_PRIVATE_KEY, `https://ropsten.infura.io/`)
+    web3 = new Web3(new HDWalletProviderPriv(ORACLE_PRIVATE_KEY, `https://ropsten.infura.io/`))
 }
 
 const BN = web3.utils.BN

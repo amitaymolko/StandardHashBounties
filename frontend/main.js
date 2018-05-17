@@ -17,12 +17,30 @@ function closeModal(tx, tx_id) {
 }
 
 var app = angular.module("myApp", []);
+app.directive("fileread", [function () {
+  return {
+    scope: {
+      fileread: "="
+    },
+    link: function (scope, element, attributes) {
+      element.bind("change", function (changeEvent) {
+        var reader = new FileReader();
+        reader.onload = function (loadEvent) {
+          scope.$apply(function () {
+            scope.fileread = loadEvent.target.result;
+          });
+        }
+        reader.readAsDataURL(changeEvent.target.files[0]);
+      });
+    }
+  }
+}]);
 
 app.controller('hashBountiesCtrl', function ($scope, $http) {
   $scope.hashTypes = [
-    { name: 'sha256' }, 
-    { name: 'sha3' },
-    { name: 'Ethereum Wallet', file: 1 },
+    { name: 'sha256', value: 'sha256' }, 
+    { name: 'sha3', value: 'sha256' },
+    { name: 'Ethereum Wallet', value: 'scrypt', file: 1 },
   ];
 
   fetch("HashCracker.json").then((e) => e.json().then(function (text) {
@@ -56,13 +74,23 @@ app.controller('hashBountiesCtrl', function ($scope, $http) {
         console.log('err', err);
       } else {
         $scope.$apply(function () {
-            value[7] = index;
-if (value[2] != 0x00)
-            $scope.hashBounties.push(value);
+            value[8] = index;
+            if (value[2] != 0x00)
+              $scope.hashBounties.push(value);
           console.log('$scope.hashBounties', $scope.hashBounties)
         });
       }
     })
+  }
+  
+  $scope.setUploadFile = function(changeEvent) {
+    var reader = new FileReader();
+    reader.onload = function (loadEvent) {
+      $scope.$apply(function () {
+        $scope.inputFile = loadEvent.target.result;
+      });
+    }
+    reader.readAsDataURL(changeEvent.target.files[0]);
   }
     $scope.bounty_price = function(bignum) {
         return web3.fromWei(bignum.toNumber(), "ether" )
@@ -95,16 +123,37 @@ if (value[2] != 0x00)
           $scope.selectedIndex = index;
         $('#submitModal').modal('show')
     }
-    
-    $scope.pay = function() {
-      var hash = document.forms['submit_hash'].hash_to_break.value
-      var hash_type = document.forms['submit_hash'].hash_type.value
-      var price = document.forms['submit_hash'].price.value
+  function decimalToHex(d, padding) {
+    var hex = Number(d).toString(16);
+    padding = typeof (padding) === "undefined" || padding === null ? padding = 2 : padding;
 
-      console.log(hash, hash_type, price);
-      var input = ""
-      $scope.HashCracker.requestHashCrack(hash, hash_type, input, { 'value': price * 10**18}, closeModal)
+    while (hex.length < padding) {
+      hex = "0" + hex;
     }
+
+    return hex;
+  } 
+
+  $scope.requestHashCrack = function() {
+    console.log('$scope', $scope)
+    
+    var hash = $scope.inputHash
+    var hash_type = $scope.selectedItem.value
+    var file = $scope.inputFile
+    var price = $scope.inputPrice
+    var inputData = ""
+
+    if (hash_type == 'scrypt' && file.startsWith('data:;base64,')) {
+      var data = file.substring('data:;base64,'.length)
+      var dataString = atob(data)
+      var json = JSON.parse(dataString)
+      inputData = `0x${json.Crypto.ciphertext}${decimalToHex(json.Crypto.kdfparams.dklen)}${json.Crypto.kdfparams.salt}${decimalToHex(json.Crypto.kdfparams.n, 4)}${decimalToHex(json.Crypto.kdfparams.r)}${decimalToHex(json.Crypto.kdfparams.p)}${json.Crypto.mac}`      
+      hash = web3.sha3(inputData, { encoding: "hex" })
+    }
+
+    console.log(hash, hash_type, price, inputData);
+    $scope.HashCracker.requestHashCrack(hash, hash_type, inputData, { 'value': price * 10**18}, closeModal)
+  }
     
     $scope.submitCrack = function() {
         console.log($scope.selectedIndex, document.forms['submit_crack'].password.value);
