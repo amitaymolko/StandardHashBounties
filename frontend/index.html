@@ -115,8 +115,8 @@
                         <td>{{hashbounty[2]}}</td>
                         <td>{{status(hashbounty)}}</td>
                         
-                        <td ng-if="check_user(hashbounty[0]) && !hashbounty[5].length > 0 && !hashbounty[6]"><a class="btn btn-warning" ng-click="openCancelModal(hashbounty[7])">Cancel</a></td>
-                        <td ng-if="check_user(hashbounty[0]) == 0 && !hashbounty[5].length > 0"><a class="btn btn-warning" ng-click="openSubmitCrackModal(hashbounty[7])">Submit</a></td>
+                        <td ng-if="check_user(hashbounty[0]) && !hashbounty[5].length > 0 && !hashbounty[6]"><a class="btn btn-warning" ng-click="openCancelModal(hashbounty[8])">Cancel</a></td>
+                        <td ng-if="check_user(hashbounty[0]) == 0 && !hashbounty[5].length > 0"><a class="btn btn-warning" ng-click="openSubmitCrackModal(hashbounty[8])">Submit</a></td>
                         <td ng-if="hashbounty[5].length > 0 || hashbounty[6]"></td>
                     </tr>
                   </table>
@@ -166,7 +166,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Submit this solution</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Submit this solution (0.001 ETH)</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

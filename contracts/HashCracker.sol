@@ -41,8 +41,8 @@ contract HashCracker is Scrypt, Oracle {
         _;
     }
     
-    modifier validMinValue() {
-        require(msg.value >= 0.001 ether);
+    modifier validMinValue(uint _value) {
+        require(msg.value >= _value);
         _;
     }
 
@@ -57,7 +57,7 @@ contract HashCracker is Scrypt, Oracle {
 
     function requestHashCrack(bytes32 _hash, string _hashType, bytes _input)
     validHashType(_hashType)
-    validMinValue
+    validMinValue(0.001 ether)
     payable
     public 
     {
@@ -69,8 +69,11 @@ contract HashCracker is Scrypt, Oracle {
     }
 
     function submitCrack(uint _index, string _password) 
+    validMinValue(0.001 ether)
+    payable
     public 
     {
+        oracle.transfer(msg.value);
         bytes32 hashedPassword;
         HashCrack storage hashCrack = hashCracks[_index];
         if (keccak256(hashCrack.hashType) == keccak256("sha256")) {
@@ -80,7 +83,7 @@ contract HashCracker is Scrypt, Oracle {
             hashedPassword = keccak256(_password);
             handleCrackAttemptInternal(_index, msg.sender, _password, hashedPassword);
         } else if (keccak256(hashCrack.hashType) == keccak256("scrypt")) {
-            emit RequestHashCheck(_index,msg.sender, _password);
+            emit RequestHashCheck(_index, msg.sender, _password);
         } else {
             revert();
         }

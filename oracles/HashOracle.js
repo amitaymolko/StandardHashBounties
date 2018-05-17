@@ -56,8 +56,13 @@ const validScrypt = (scryptParams, password) => {
 }
 
 web3.eth.getAccounts().then(accounts => {
+    console.log('accounts', accounts)
+    // console.log('ORACLE_FROM_ADDRESS', ORACLE_FROM_ADDRESS)
+    
     var oracle = ORACLE_FROM_ADDRESS
-
+    if (NETWORK == 'development') {
+        oracle = accounts[2]
+    }
     web3.eth.defaultAccount = oracle;
 
     const run = async () => {
@@ -85,39 +90,9 @@ web3.eth.getAccounts().then(accounts => {
                             await deployedHashCrackerContract.submitValidCrack(hashCrackIndex, crackerAddress, crackerPassword, { from: oracle, gas: 470000 })
                             const hashCrack2 = await deployedHashCrackerContract.hashCracks(hashCrackIndex);
                             console.log('hashCrack2', hashCrack2)
-                            
                         }                         
                     }
                 }
-                
-                /*
-                args:
-                    { mainWallet: '0x75c35c980c0d37ef46df04d31a140b65503c0eed',
-                        toExchange: 'binance',
-                        value: BigNumber { s: 1, e: 17, c: [Array] } } }
-                */
-                // const mainWallet = result.args.mainWallet;
-                // const toExchange = result.args.toExchange;
-                // const depositExchangeAddress = result.args.exchangeAddress;
-                // const value = result.args.value;
-
-                // const depositExchangeAddressFromMaster = await deployedHashCrackerContract.getFundExchangeAddress(mainWallet, toExchange)
-                // if (depositExchangeAddress == depositExchangeAddressFromMaster) {
-                //     await web3.eth.sendTransaction({ to: depositExchangeAddress, from: tempDepositWallet, gas: 4700000, value })
-                //     console.log(`sent ${value} to ${depositExchangeAddress}`)
-                    
-                // }
-    
-                /*
-                Binance:
-                res { info:
-                    { msg: 'Success',
-                        success: true,
-                        id: 'fe8d95f298144284b2e4adbde4bbea50' },
-                    id: 'fe8d95f298144284b2e4adbde4bbea50' }
-                res { info: { msg: 'Insufficient balance.', success: false }, id: undefined }
-                res { info: { msg: 'You don\'t have permission.', success: false }, id: undefined } // bad api key or bad ip filter
-                */
             }
         });
 

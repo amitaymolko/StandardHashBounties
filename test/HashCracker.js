@@ -103,7 +103,7 @@ contract('HashCracker', (accounts) => {
       event.stopWatching()
       done()
     })
-    Contract.submitCrack(0, "Password1", { from: account2 })
+    Contract.submitCrack(0, "Password1", { from: account2, value })
   })
 
   it('redeem reward', async () => {
