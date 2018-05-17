@@ -2,11 +2,24 @@ const fetch = require('fetch')
 const contract = require('truffle-contract')
 const scryptsy = require('scryptsy')
 const ethUtil = require('ethereumjs-util')
+const HDWalletProviderPriv = require("truffle-hdwallet-provider-privkey");
+const HDWalletProvider = require("truffle-hdwallet-provider");
+
+require('dotenv').config({ path: '../.env' })
+
+const NETWORK = process.env.NETWORK
+const ORACLE_FROM_ADDRESS = process.env.ORACLE_FROM_ADDRESS
+const ORACLE_PRIVATE_KEY = process.env.ORACLE_PRIVATE_KEY
 
 const HashCrackerContract = require('../build/contracts/HashCracker.json')
 
 const Web3 = require('web3')
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
+let web3 
+if (NETWORK == 'development') {
+    web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'))
+} else if (NETWORK == 'ropsten') {
+    web3 = new HDWalletProviderPriv(ORACLE_PRIVATE_KEY, `https://ropsten.infura.io/`)
+}
 
 const BN = web3.utils.BN
 
@@ -42,11 +55,9 @@ const validScrypt = (scryptParams, password) => {
 }
 
 web3.eth.getAccounts().then(accounts => {
-    var account = accounts[0]
-    var account2 = accounts[1]
-    var oracle = accounts[2]
+    var oracle = ORACLE_FROM_ADDRESS
 
-    web3.eth.defaultAccount = account;
+    web3.eth.defaultAccount = oracle;
 
     const run = async () => {
         const deployedHashCrackerContract = await hashCrackerContract.deployed()
@@ -71,7 +82,10 @@ web3.eth.getAccounts().then(accounts => {
 
                         if (valid) {
                             await deployedHashCrackerContract.submitValidCrack(hashCrackIndex, crackerAddress, crackerPassword, { from: oracle, gas: 470000 })
-                        }                        
+                            const hashCrack2 = await deployedHashCrackerContract.hashCracks(hashCrackIndex);
+                            console.log('hashCrack2', hashCrack2)
+                            
+                        }                         
                     }
                 }
                 

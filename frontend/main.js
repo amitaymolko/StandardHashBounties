@@ -19,6 +19,12 @@ function closeModal(tx, tx_id) {
 var app = angular.module("myApp", []);
 
 app.controller('hashBountiesCtrl', function ($scope, $http) {
+  $scope.hashTypes = [
+    { name: 'sha256' }, 
+    { name: 'sha3' },
+    { name: 'Ethereum Wallet', file: 1 },
+  ];
+
   fetch("HashCracker.json").then((e) => e.json().then(function (text) {
     $scope.HashCrackerJson = text
     $scope.HashCrackerAbi = web3.eth.contract($scope.HashCrackerJson.abi);
@@ -43,7 +49,6 @@ app.controller('hashBountiesCtrl', function ($scope, $http) {
       }
     })
   }
-
 
   function loadHashBounty(index, $scope) {
     $scope.HashCracker.hashCracks(index, function (err, value) {
@@ -92,8 +97,13 @@ if (value[2] != 0x00)
     }
     
     $scope.pay = function() {
-        console.log(document.forms['submit_hash'].hash_to_break.value, document.forms['submit_hash'].hash_type.value);
-        $scope.HashCracker.requestHashCrack(document.forms['submit_hash'].hash_to_break.value, document.forms['submit_hash'].hash_type.value, {'value': document.forms['submit_hash'].price.value * 10**18}, closeModal)
+      var hash = document.forms['submit_hash'].hash_to_break.value
+      var hash_type = document.forms['submit_hash'].hash_type.value
+      var price = document.forms['submit_hash'].price.value
+
+      console.log(hash, hash_type, price);
+      var input = ""
+      $scope.HashCracker.requestHashCrack(hash, hash_type, input, { 'value': price * 10**18}, closeModal)
     }
     
     $scope.submitCrack = function() {

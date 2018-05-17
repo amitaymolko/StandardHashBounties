@@ -53,7 +53,6 @@ contract HashCracker is Scrypt, Oracle {
         validHashTypes["sha256"] = true;
         validHashTypes["sha3"] = true;
         validHashTypes["scrypt"] = true;
-        // validHashTypes["ripemd160"] = true;
     }
 
     function requestHashCrack(bytes32 _hash, string _hashType, bytes _input)
