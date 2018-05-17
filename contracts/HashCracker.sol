@@ -1,10 +1,12 @@
 pragma solidity 0.4.23;
 
 import "./Scrypt.sol";
+import "./Oracle.sol";
 
-contract HashCracker is Scrypt {
+contract HashCracker is Scrypt, Oracle {
   
     event NewHashEvent(address requestorAddress, uint bountyValue, bytes32 hashBytes, string hashType);
+    event RequestHashCheck(uint hashCrackIndex, address crackerAddress, string crackerPassword);
     event CrackedHashEvent(address crackerAddress, uint hashCrackIndex);
  
     struct HashCrack {
@@ -15,7 +17,7 @@ contract HashCracker is Scrypt {
         string hashType;
        
         address crackerAddress;
-        string crackedPassword;
+        string crackerPassword;
 
         bool cancelled;
         bool redeemed;
@@ -44,7 +46,8 @@ contract HashCracker is Scrypt {
         _;
     }
 
-    constructor()
+    constructor(address _oracleAddress)
+    Oracle(_oracleAddress)
     public 
     {
         validHashTypes["sha256"] = true;
@@ -73,10 +76,39 @@ contract HashCracker is Scrypt {
         HashCrack storage hashCrack = hashCracks[_index];
         if (keccak256(hashCrack.hashType) == keccak256("sha256")) {
             hashedPassword = sha256(_password);
-            handleCrackAttemptInternal(_index, _password, hashedPassword);
+            handleCrackAttemptInternal(_index, msg.sender, _password, hashedPassword);
         } else if (keccak256(hashCrack.hashType) == keccak256("sha3")) {
             hashedPassword = keccak256(_password);
-            handleCrackAttemptInternal(_index, _password, hashedPassword);
+            handleCrackAttemptInternal(_index, msg.sender, _password, hashedPassword);
+        } else if (keccak256(hashCrack.hashType) == keccak256("scrypt")) {
+            emit RequestHashCheck(_index,msg.sender, _password);
+        } else {
+            revert();
+        }
+    }
+
+    function submitValidCrack(uint _index, address _crackerAddress, string _crackerPassword) 
+    onlyOracle
+    public 
+    {
+        HashCrack storage hashCrack = hashCracks[_index];
+        handleCrackAttemptInternal(_index, _crackerAddress, _crackerPassword, hashCrack.hashBytes);
+    }
+
+    function handleCrackAttemptInternal(uint _index, address _crackerAddress, string _crackerPassword, bytes32 _hashedPassword)
+    validHashCrack(_index)
+    internal
+    {
+        HashCrack storage hashCrack = hashCracks[_index];
+        if (_hashedPassword == hashCrack.hashBytes) {
+            hashCrack.crackerAddress = _crackerAddress;
+            hashCrack.crackerPassword = _crackerPassword;
+
+            emit CrackedHashEvent(_crackerAddress, _index);
+            
+            // if (keccak256(hashCrack.hashType) == keccak256("sha256") || keccak256(hashCrack.hashType) == keccak256("sha3")) {
+            //     redeemRewardUnsafe(_index);
+            // }
         } else {
             revert();
         }
@@ -92,26 +124,7 @@ contract HashCracker is Scrypt {
         address(hashCrack.requestorAddress).transfer(hashCrack.bountyValue);
     }
 
-    function handleCrackAttemptInternal(uint _index, string _password, bytes32 _hashedPassword)
-    validHashCrack(_index)
-    internal
-    {
-        HashCrack storage hashCrack = hashCracks[_index];
-        if (_hashedPassword == hashCrack.hashBytes) {
-            hashCrack.crackerAddress = msg.sender;
-            hashCrack.crackedPassword = _password;
-
-            emit CrackedHashEvent(msg.sender, _index);
-            
-            if (keccak256(hashCrack.hashType) == keccak256("sha256") || keccak256(hashCrack.hashType) == keccak256("sha3")) {
-                redeemCrackAttemptUnsafe(_index);
-            }
-        } else {
-            revert();
-        }
-    }
-
-    function redeemCrackAttemptUnsafe(uint _index)
+    function redeemRewardUnsafe(uint _index)
     public
     {
         HashCrack storage hashCrack = hashCracks[_index];

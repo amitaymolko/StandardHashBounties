@@ -106,20 +106,28 @@ contract('HashCracker', (accounts) => {
     Contract.submitCrack(0, "Password1", { from: account2 })
   })
 
-  it('fails to redeem redeemed hash', async () => {
+  it('redeem reward', async () => {
     const initialHashCrack = (await Contract.hashCracks(0))
-    assert.isTrue(initialHashCrack[7])
-    try {
-      const tx = await Contract.redeemCrackAttemptUnsafe(0, { from: account2 })
-      console.log('tx', tx)
-      throw new Error('unauthorized tx')
-    } catch (err) {
-      if (!err.message.endsWith('revert')) {
-        throw err
-      }
-      return
-    }
+    assert.isFalse(initialHashCrack[7])
+    await Contract.redeemRewardUnsafe(0, { from: account2 })
+    const finalHashCrack = (await Contract.hashCracks(0))
+    assert.isTrue(finalHashCrack[7])
   })
+
+  // it('fails to redeem redeemed hash', async () => {
+  //   const initialHashCrack = (await Contract.hashCracks(0))
+  //   assert.isTrue(initialHashCrack[7])
+  //   try {
+  //     const tx = await Contract.redeemCrackAttemptUnsafe(0, { from: account2 })
+  //     console.log('tx', tx)
+  //     throw new Error('unauthorized tx')
+  //   } catch (err) {
+  //     if (!err.message.endsWith('revert')) {
+  //       throw err
+  //     }
+  //     return
+  //   }
+  // })
 
   it('fails to submit crack on already cracked hash', async () => {
     const length = (await Contract.getHashCracksLength()).toNumber()
@@ -151,7 +159,7 @@ contract('HashCracker', (accounts) => {
   it('submits scrypt hash', async () => {
     const value = web3.toWei(0.1, 'ether')
     const hash = web3.sha3(inputBytes, { encoding: "hex" })
-    await Contract.requestHashCrack(hash, "scrypt", inputBytes, { value }) //Password1
+    await Contract.requestHashCrack(hash, "scrypt", inputBytes, { value })
     // const hashCrack = (await Contract.hashCracks(1))
     const scryptHashParam = await Contract.getScrypt(hash)
 
@@ -163,6 +171,8 @@ contract('HashCracker', (accounts) => {
     assert.isTrue(scryptHashParam[5].toNumber() == 1)
     assert.isTrue(scryptHashParam[6] == "0x0994fb7a49c0f5f4b2c365e168f27701366acb3c326c11366b027eb96119140b")
   })
+
+  
 
   // it('redeems crack', async () => {
   //   const initialHashCrack = (await Contract.hashCracks(2))
