@@ -1,6 +1,8 @@
 pragma solidity 0.4.23;
 
-contract HashCracker {
+import "./Scrypt.sol";
+
+contract HashCracker is Scrypt {
   
     event NewHashEvent(address requestorAddress, uint bountyValue, bytes32 hashBytes, string hashType);
     event CrackedHashEvent(address crackerAddress, uint hashCrackIndex);
@@ -16,6 +18,7 @@ contract HashCracker {
         string crackedPassword;
 
         bool cancelled;
+        bool redeemed;
     }
 
     HashCrack[] public hashCracks;
@@ -46,17 +49,21 @@ contract HashCracker {
     {
         validHashTypes["sha256"] = true;
         validHashTypes["sha3"] = true;
+        validHashTypes["scrypt"] = true;
         // validHashTypes["ripemd160"] = true;
     }
 
-    function requestHashCrack(bytes32 _hashBytes, string _hashType)
+    function requestHashCrack(bytes32 _hash, string _hashType, bytes _input)
     validHashType(_hashType)
     validMinValue
     payable
     public 
     {
-        hashCracks.push(HashCrack(msg.sender, msg.value, _hashBytes, _hashType, 0x00, "", false));
-        emit NewHashEvent(msg.sender, msg.value, _hashBytes, _hashType);
+        if (keccak256(_hashType) == keccak256("scrypt")) {
+            requestScryptHashCrack(_hash, _input);
+        }
+        hashCracks.push(HashCrack(msg.sender, msg.value, _hash, _hashType, 0x00, "", false, false));
+        emit NewHashEvent(msg.sender, msg.value, _hash, _hashType);
     }
 
     function submitCrack(uint _index, string _password) 
@@ -95,7 +102,21 @@ contract HashCracker {
             hashCrack.crackedPassword = _password;
 
             emit CrackedHashEvent(msg.sender, _index);
+            
+            if (keccak256(hashCrack.hashType) == keccak256("sha256") || keccak256(hashCrack.hashType) == keccak256("sha3")) {
+                redeemCrackAttemptUnsafe(_index);
+            }
+        } else {
+            revert();
+        }
+    }
 
+    function redeemCrackAttemptUnsafe(uint _index)
+    public
+    {
+        HashCrack storage hashCrack = hashCracks[_index];
+        if (msg.sender == hashCrack.crackerAddress && !hashCrack.redeemed) {
+            hashCrack.redeemed = true;
             address(msg.sender).transfer(hashCrack.bountyValue);
         } else {
             revert();

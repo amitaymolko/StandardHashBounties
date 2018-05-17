@@ -30,9 +30,13 @@ contract('Scrypt', (accounts) => {
     const hash = web3.sha3(inputBytes, { encoding: "hex" })
     await Contract.requestScryptHashCrack(hash, inputBytes) 
     const scryptHashParam = await Contract.getScrypt(hash)
-    console.log('scryptHashParam', scryptHashParam[3].toString())
-
-    // assert.isTrue(false)
+    
+    assert.isTrue(scryptHashParam[0] == "0x19af5e7a09875927cdec8900a5b4ce1e428b6746836586ea6838d1cf5a027115")
+    assert.isTrue(scryptHashParam[1].toNumber() == 32)
+    assert.isTrue(scryptHashParam[2] == "0x52d7e775c9b3a5d8ebf40e2be3be234707816a758b6eec1ba28c54a4b6cf63de")
+    assert.isTrue(scryptHashParam[3].toNumber() == 8192)
+    assert.isTrue(scryptHashParam[4].toNumber() == 8)
+    assert.isTrue(scryptHashParam[5].toNumber() == 1)
+    assert.isTrue(scryptHashParam[6] == "0x0994fb7a49c0f5f4b2c365e168f27701366acb3c326c11366b027eb96119140b")
   })
-
 })

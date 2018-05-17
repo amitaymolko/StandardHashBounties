@@ -61,7 +61,7 @@ contract Scrypt {
 
     function bytesToUint8(bytes b, uint offset) private pure returns (uint8) {
         uint8 out;
-        out |= uint8(b[offset] & 0xFF) >> (8);
+        out |= uint8(b[offset] & 0xFF);
         return out;
     }
 

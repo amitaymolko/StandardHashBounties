@@ -6,6 +6,7 @@ contract('HashCracker', (accounts) => {
   var account2 = accounts[1]
 
   const minValue = web3.toWei(0.001, 'ether')
+  const inputBytes = "0x19af5e7a09875927cdec8900a5b4ce1e428b6746836586ea6838d1cf5a0271152052d7e775c9b3a5d8ebf40e2be3be234707816a758b6eec1ba28c54a4b6cf63de200008010994fb7a49c0f5f4b2c365e168f27701366acb3c326c11366b027eb96119140b"
 
   it('deploy and grab', async () => {
     // Contract = await HashCracker.new()
@@ -16,7 +17,7 @@ contract('HashCracker', (accounts) => {
   it('fails to submit hashcrack with invalid hashtype', async () => {
     try {
       const value = web3.toWei(0.1, 'ether')
-      const tx = await Contract.requestHashCrack(0x19513FDC9DA4FB72A4A05EB66917548D3C90FF94D5419E1F2363EEA89DFEE1DD, "invalid_hash_type", { value })
+      const tx = await Contract.requestHashCrack(0x19513FDC9DA4FB72A4A05EB66917548D3C90FF94D5419E1F2363EEA89DFEE1DD, "invalid_hash_type", "", { value })
       console.log('tx', tx)
       throw new Error('unauthorized tx')
     } catch (err) {
@@ -27,10 +28,10 @@ contract('HashCracker', (accounts) => {
     }
   })
 
-  it('fails to submit hashcrack with invalid amoun', async () => {
+  it('fails to submit hashcrack with invalid amount', async () => {
     try {
       const value = web3.toWei(0.0001, 'ether')
-      const tx = await Contract.requestHashCrack(0x19513FDC9DA4FB72A4A05EB66917548D3C90FF94D5419E1F2363EEA89DFEE1DD, "sha256", { value })
+      const tx = await Contract.requestHashCrack(0x19513FDC9DA4FB72A4A05EB66917548D3C90FF94D5419E1F2363EEA89DFEE1DD, "sha256", "", { value })
       console.log('tx', tx)
       throw new Error('unauthorized tx')
     } catch (err) {
@@ -58,7 +59,7 @@ contract('HashCracker', (accounts) => {
       event.stopWatching()
       done()
     })
-    Contract.requestHashCrack("0x19513FDC9DA4FB72A4A05EB66917548D3C90FF94D5419E1F2363EEA89DFEE1DD", "sha256", { value }) //Password1
+    Contract.requestHashCrack("0x19513FDC9DA4FB72A4A05EB66917548D3C90FF94D5419E1F2363EEA89DFEE1DD", "sha256", "", { value }) //Password1
   })
 
   it('fails to submit crack with wrong password', async () => {
@@ -105,6 +106,20 @@ contract('HashCracker', (accounts) => {
     Contract.submitCrack(0, "Password1", { from: account2 })
   })
 
+  it('fails to redeem redeemed hash', async () => {
+    const initialHashCrack = (await Contract.hashCracks(0))
+    assert.isTrue(initialHashCrack[7])
+    try {
+      const tx = await Contract.redeemCrackAttemptUnsafe(0, { from: account2 })
+      console.log('tx', tx)
+      throw new Error('unauthorized tx')
+    } catch (err) {
+      if (!err.message.endsWith('revert')) {
+        throw err
+      }
+      return
+    }
+  })
 
   it('fails to submit crack on already cracked hash', async () => {
     const length = (await Contract.getHashCracksLength()).toNumber()
@@ -125,24 +140,36 @@ contract('HashCracker', (accounts) => {
     }
   })
 
-
   it('submits and cancels crack with password', async() => { 
     const value = web3.toWei(0.1, 'ether')
-    await Contract.requestHashCrack("0x19513FDC9DA4FB72A4A05EB66917548D3C90FF94D5419E1F2363EEA89DFEE1DD", "sha256", { value }) //Password1
+    await Contract.requestHashCrack("0x19513FDC9DA4FB72A4A05EB66917548D3C90FF94D5419E1F2363EEA89DFEE1DD", "sha256", "", { value }) //Password1
     await Contract.cancelHashCrack(1)
     const hashCrack = (await Contract.hashCracks(1))    
     assert.isTrue(hashCrack[6])
   })
 
-  // it('claim reward fails', async () => {
-  //   const balance = web3.fromWei(await web3.eth.getBalance(account).toNumber(), 'ether')
+  it('submits scrypt hash', async () => {
+    const value = web3.toWei(0.1, 'ether')
+    const hash = web3.sha3(inputBytes, { encoding: "hex" })
+    await Contract.requestHashCrack(hash, "scrypt", inputBytes, { value }) //Password1
+    // const hashCrack = (await Contract.hashCracks(1))
+    const scryptHashParam = await Contract.getScrypt(hash)
 
-  //   const index = await Contract.getPendingPredictionIndexByAddress(account)
-  //   assert.isTrue(index >= 0)
+    assert.isTrue(scryptHashParam[0] == "0x19af5e7a09875927cdec8900a5b4ce1e428b6746836586ea6838d1cf5a027115")
+    assert.isTrue(scryptHashParam[1].toNumber() == 32)
+    assert.isTrue(scryptHashParam[2] == "0x52d7e775c9b3a5d8ebf40e2be3be234707816a758b6eec1ba28c54a4b6cf63de")
+    assert.isTrue(scryptHashParam[3].toNumber() == 8192)
+    assert.isTrue(scryptHashParam[4].toNumber() == 8)
+    assert.isTrue(scryptHashParam[5].toNumber() == 1)
+    assert.isTrue(scryptHashParam[6] == "0x0994fb7a49c0f5f4b2c365e168f27701366acb3c326c11366b027eb96119140b")
+  })
 
-  //   await Contract.claimReward(index)
-
-  //   var balance2 = web3.fromWei(await web3.eth.getBalance(account).toNumber(), 'ether')
-  //   assert.isTrue(balance > balance2)
+  // it('redeems crack', async () => {
+  //   const initialHashCrack = (await Contract.hashCracks(2))
+  //   console.log('initialHashCrack', initialHashCrack)
+    
+  //   await Contract.redeemCrackAttemptUnsafe(2, {from: account2})
+  //   const hashCrack = (await Contract.hashCracks(2))
+  //   assert.isTrue(hashCrack[7])
   // })
 })
