@@ -117,6 +117,10 @@
                         
                         <td ng-if="check_user(hashbounty[0]) && !hashbounty[5].length > 0 && !hashbounty[6]"><a class="btn btn-warning" ng-click="openCancelModal(hashbounty[8])">Cancel</a></td>
                         <td ng-if="check_user(hashbounty[0]) == 0 && !hashbounty[5].length > 0"><a class="btn btn-warning" ng-click="openSubmitCrackModal(hashbounty[8])">Submit</a></td>
+                        <td ng-if="check_user(hashbounty[4]) && !hashbounty[7]">
+                          <a class="btn btn-warning" ng-click="claimReward(hashbounty[8])">Claim Reward</a>
+                        </td>
+
                         <td ng-if="hashbounty[5].length > 0 || hashbounty[6]"></td>
                     </tr>
                   </table>

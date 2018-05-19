@@ -157,7 +157,11 @@ app.controller('hashBountiesCtrl', function ($scope, $http) {
     
     $scope.submitCrack = function() {
         console.log($scope.selectedIndex, document.forms['submit_crack'].password.value);
-      $scope.HashCracker.submitCrack($scope.selectedIndex, document.forms['submit_crack'].password.value, { 'value': 0.001 * 10 ** 18 }, closeModal)
+      $scope.HashCracker.submitCrack($scope.selectedIndex, document.forms['submit_crack'].password.value, { 'value': 0.01 * 10 ** 18 }, closeModal)
+    }
+
+    $scope.claimReward = function(index) {
+      $scope.HashCracker.redeemRewardUnsafe(index, closeModal)
     }
     
     $scope.cancelHashBounty = function() {
