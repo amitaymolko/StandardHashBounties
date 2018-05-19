@@ -111,7 +111,7 @@
 <!--                       | orderBy: check_user(hashbounty[0]) -->
                     <tr ng-class="check_user(hashbounty[0])" aclass='user_request' ng-repeat="hashbounty in hashBounties">
                         <td>{{bounty_price(hashbounty[1])}} ETH</td>
-                        <td>{{hashbounty[3]}}</td>
+                        <td>{{getHashTypeName(hashbounty[3])}}</td>
                         <td>{{hashbounty[2]}}</td>
                         <td>{{status(hashbounty)}}</td>
                         

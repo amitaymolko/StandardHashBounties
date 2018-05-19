@@ -39,9 +39,18 @@ app.directive("fileread", [function () {
 app.controller('hashBountiesCtrl', function ($scope, $http) {
   $scope.hashTypes = [
     { name: 'sha256', value: 'sha256' }, 
-    { name: 'sha3', value: 'sha256' },
+    { name: 'sha3', value: 'sha3' },
     { name: 'Ethereum Wallet', value: 'scrypt', file: 1 },
   ];
+
+  $scope.getHashTypeName = function(value) {
+    for(var hashType of $scope.hashTypes) {
+      if (hashType.value == value) {
+        return hashType.name
+      }
+    }
+    return ""
+  }
 
   fetch("HashCracker.json").then((e) => e.json().then(function (text) {
     $scope.HashCrackerJson = text
