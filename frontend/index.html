@@ -97,7 +97,7 @@
     <section class="download text-center" id="download" style="background-color: #f9f7f7;">
         <div class="container">
             <div class="row">
-                <div class="col-md-12"><h3>Current Bounties</h3></div>
+                <div class="col-md-12"><h3 style="display: inline;">Current Bounties</h3><span style="float: right;">Hide Cancelled: <input type="checkbox" ng-model="hideCancelled"/></span style="float: right;"></div>
                 <div></div>
               <div class="col-md-12">
                   <table ng-table="vm.tableParams" class="table" show-filter="true">
@@ -109,7 +109,7 @@
                       <td></td>
                     </tr>
 <!--                       | orderBy: check_user(hashbounty[0]) -->
-                    <tr ng-class="check_user(hashbounty[0])" aclass='user_request' ng-repeat="hashbounty in hashBounties">
+                    <tr ng-class="check_user(hashbounty[0])" aclass='user_request' ng-repeat="hashbounty in getHashbountiesToDisplay()">
                         <td>{{bounty_price(hashbounty[1])}} ETH</td>
                         <td>{{getHashTypeName(hashbounty[3])}}</td>
                         <td>{{hashbounty[2]}}</td>

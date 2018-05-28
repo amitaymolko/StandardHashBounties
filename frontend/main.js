@@ -42,7 +42,7 @@ app.controller('hashBountiesCtrl', function ($scope, $http) {
     { name: 'sha3', value: 'sha3' },
     { name: 'Ethereum Wallet', value: 'scrypt', file: 1 },
   ];
-
+  $scope.hideCancelled= true;
   $scope.getHashTypeName = function(value) {
     for(var hashType of $scope.hashTypes) {
       if (hashType.value == value) {
@@ -90,6 +90,17 @@ app.controller('hashBountiesCtrl', function ($scope, $http) {
         });
       }
     })
+  }
+
+  $scope.getHashbountiesToDisplay = function() {
+    var hashbounties = []
+    for (const hashbounty of $scope.hashBounties) {
+      if(hashbounty[6] && $scope.hideCancelled) {
+        continue;
+      }
+      hashbounties.push(hashbounty)
+    }
+    return hashbounties
   }
   
   $scope.setUploadFile = function(changeEvent) {
